@@ -21,7 +21,7 @@ const Sidebar = () => {
         {/* User Profile */}
         <div className="flex flex-col items-center">
           <img
-            src="/public/profile.png"
+            src="/profile.png"
             alt="User"
             className="mb-4 h-20 w-20 rounded-full"
           />
