@@ -1,20 +1,36 @@
-import React from 'react'
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { register } from "../api/auth"; // ✅ import API function
 
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      alert("❌ Passwords do not match!");
       return;
     }
-    alert(`Name: ${name}, Email: ${email}`);
+
+    setLoading(true);
+    try {
+      const res = await register({ name, email, password }); // call API
+      console.log("📝 Register response:", res.data);
+
+      alert("✅ Account created successfully! Please login.");
+      navigate("/login"); // redirect to login page
+    } catch (err) {
+      console.error("❌ Register error:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Signup failed ❌");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -78,15 +94,21 @@ const SignUp = () => {
           </div>
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none"
+            disabled={loading}
+            className={`w-full rounded-md px-4 py-2 text-white focus:outline-none ${
+              loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            Sign Up
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className='text-blue-600 hover:text-blue-700 hover:underline'>
-          Login
+          <Link
+            to="/login"
+            className="text-blue-600 hover:text-blue-700 hover:underline"
+          >
+            Login
           </Link>
         </p>
       </div>

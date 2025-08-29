@@ -1,14 +1,38 @@
-import React from "react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/auth"; // API call
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); // show errors in UI
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Email: ${email}, Password: ${password}`);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await login({ email, password });
+      console.log("🔑 Login response:", res.data); // debug response
+
+      // ✅ Your backend sends { token: "..." }
+      const token = res.data?.token;
+
+      if (!token) {
+        throw new Error("Token not found in response");
+      }
+
+      localStorage.setItem("token", token); // save JWT
+      navigate("/transactions"); // redirect after login
+    } catch (err) {
+      console.error("❌ Login error:", err.message);
+      setError(err.message); // show error under form
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,18 +68,31 @@ const Login = () => {
               required
             />
           </div>
+
+          {/* Error message */}
+          {error && (
+            <p className="mb-3 text-sm text-red-600 text-center">{error}</p>
+          )}
+
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none"
+            disabled={loading}
+            className={`w-full rounded-md px-4 py-2 text-white focus:outline-none ${
+              loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don't have an account?{" "}
-         
-          <Link to="/signupgit init" className='text-blue-600 hover:text-blue-700 hover:underline'>
-          Sign Up          </Link>
+          Don&apos;t have an account?{" "}
+          <Link
+            to="/register"
+            className="text-blue-600 hover:text-blue-700 hover:underline"
+          >
+            Sign Up
+          </Link>
         </p>
       </div>
     </div>

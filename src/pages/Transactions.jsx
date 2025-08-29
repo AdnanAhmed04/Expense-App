@@ -12,7 +12,7 @@ const Transactions = () => {
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen">
-            <Sidebar />
+            {/* <Sidebar /> */}
             <div className="flex-1 p-4 md:p-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">Transactions</h1>
 
