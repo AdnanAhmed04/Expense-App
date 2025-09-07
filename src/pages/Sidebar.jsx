@@ -25,7 +25,7 @@ const Sidebar = () => {
             alt="User"
             className="mb-4 h-20 w-20 rounded-full"
           />
-          <h2 className="text-lg font-semibold">John Doe</h2>
+          <h2 className="text-lg font-semibold">{data.name}</h2>
         </div>
 
         {/* Navigation Links */}
