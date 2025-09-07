@@ -9,6 +9,7 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  // api starting 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ const SignUp = () => {
       console.log("📝 Register response:", res.data);
 
       alert("✅ Account created successfully! Please login.");
-      navigate("/login"); // redirect to login page
+      navigate("/login"); 
     } catch (err) {
       console.error("❌ Register error:", err.response?.data || err.message);
       alert(err.response?.data?.message || "Signup failed ❌");
